@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Laporan Hasil Testing & Security Audit - SAPA RSTN</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  @page {
+    size: A4 portrait;
+    margin: 18mm 16mm 18mm 16mm;
+    @bottom-right {
+      content: counter(page);
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #1e293b;
+    background: #ffffff;
+    line-height: 1.55;
+    font-size: 9.5pt;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Header Kop Dokumen */
+  .doc-header {
+    border-bottom: 3px double #059669;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-left {
+    flex: 1;
+  }
+
+  .inst-title {
+    font-size: 14pt;
+    font-weight: 800;
+    color: #065f46;
+    letter-spacing: -0.3px;
+    margin: 0 0 2px 0;
+    text-transform: uppercase;
+  }
+
+  .doc-title {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 4px 0;
+  }
+
+  .doc-meta {
+    font-size: 8pt;
+    color: #64748b;
+    margin: 0;
+  }
+
+  .badge-confidential {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+    font-size: 8pt;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    text-align: right;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Headings */
+  h2 {
+    font-size: 12pt;
+    font-weight: 700;
+    color: #065f46;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 4px;
+    margin-top: 22px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    page-break-after: avoid;
+  }
+
+  h2::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 16px;
+    background: #059669;
+    border-radius: 2px;
+  }
+
+  h3 {
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: #1e293b;
+    margin-top: 14px;
+    margin-bottom: 6px;
+    page-break-after: avoid;
+  }
+
+  /* Metric Cards */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .metric-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+
+  .metric-card.success {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+  }
+
+  .metric-card.warning {
+    background: #fffbeb;
+    border-color: #fde68a;
+  }
+
+  .metric-value {
+    font-size: 18pt;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 2px;
+  }
+
+  .metric-value.success { color: #16a34a; }
+  .metric-value.warning { color: #d97706; }
+  .metric-value.dark { color: #0f172a; }
+
+  .metric-label {
+    font-size: 7.5pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #64748b;
+    letter-spacing: 0.3px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 16px 0;
+    font-size: 8.5pt;
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  th {
+    background: #0f766e;
+    color: #ffffff;
+    font-weight: 600;
+    text-align: left;
+    padding: 6px 8px;
+    border: 1px solid #0f766e;
+  }
+
+  td {
+    padding: 6px 8px;
+    border: 1px solid #e2e8f0;
+    vertical-align: top;
+  }
+
+  tbody tr:nth-child(even) {
+    background: #f8fafc;
+  }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .badge-high {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+
+  .badge-medium {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+  }
+
+  .badge-low {
+    background: #e0f2fe;
+    color: #075985;
+    border: 1px solid #bae6fd;
+  }
+
+  .badge-pass {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+  }
+
+  /* Finding Box */
+  .finding-box {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    padding: 10px 12px;
+    background: #ffffff;
+    page-break-inside: avoid;
+  }
+
+  .finding-box.high {
+    border-left: 4px solid #dc2626;
+  }
+
+  .finding-box.medium {
+    border-left: 4px solid #d97706;
+  }
+
+  .finding-box.low {
+    border-left: 4px solid #0284c7;
+  }
+
+  .finding-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .finding-title {
+    font-size: 9.5pt;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .finding-loc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    color: #0f766e;
+    background: #f0fdf4;
+    padding: 2px 5px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    display: inline-block;
+  }
+
+  .finding-desc {
+    margin: 4px 0;
+    color: #334155;
+    font-size: 9pt;
+  }
+
+  .finding-remed {
+    margin-top: 6px;
+    padding: 6px 10px;
+    background: #f8fafc;
+    border-left: 3px solid #10b981;
+    border-radius: 0 4px 4px 0;
+    font-size: 8.5pt;
+    color: #1e293b;
+  }
+
+  .finding-remed strong {
+    color: #047857;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    background: #f1f5f9;
+    padding: 1px 4px;
+    border-radius: 3px;
+    color: #0f172a;
+  }
+
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    background: #0f172a;
+    color: #f8fafc;
+    padding: 8px 10px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 6px 0;
+  }
+
+  /* Page Break Utilities */
+  .page-break {
+    page-break-after: always;
+  }
+
+  .avoid-break {
+    page-break-inside: avoid;
+  }
+
+  ul, ol {
+    margin: 6px 0 10px 18px;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 3px;
+  }
+
+  .footer-sign {
+    margin-top: 30px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 12px;
+    font-size: 8pt;
+    color: #64748b;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<!-- KOP DOKUMEN -->
+<div class="doc-header">
+  <div class="header-left">
+    <div class="inst-title">RSUD R.A.A. TJOKRONEGORO PURWOREJO</div>
+    <div class="doc-title">LAPORAN HASIL TESTING & SECURITY AUDIT — SAPA RSTN</div>
+    <div class="doc-meta">
+      <strong>Tanggal:</strong> 21 Oktober 2026 &nbsp;|&nbsp;
+      <strong>Target:</strong> Portal Pasien (Frontend Vue 3 + Vite) &nbsp;|&nbsp;
+      <strong>Lingkungan:</strong> Vitest, Node.js v24, JSDOM
+    </div>
+  </div>
+  <div>
+    <div class="badge-confidential">QA & Security Audit</div>
+  </div>
+</div>
+
+<!-- SECTION 1: RINGKASAN EKSEKUTIF -->
+<h2>1. Ringkasan Eksekutif</h2>
+<p>
+  Pengujian otomatis dan audit keamanan aplikasi web <strong>SAPA RSTN</strong> (Sistem Aplikasi Pasien RSUD R.A.A. Tjokronegoro) telah diselesaikan dalam satu siklus terpadu (<em>single-run</em>). Seluruh dependensi pengujian dijalankan pada lingkungan terisolasi dengan mock API lengkap tanpa memanggil jaringan eksternal dan tanpa mengakses data riil pasien.
+</p>
+
+<div class="metrics-grid">
+  <div class="metric-card success">
+    <div class="metric-value success">140 / 140</div>
+    <div class="metric-label">Kasus Uji Lulus (100%)</div>
+  </div>
+  <div class="metric-card success">
+    <div class="metric-value success">0</div>
+    <div class="metric-label">Kasus Uji Gagal</div>
+  </div>
+  <div class="metric-card success">
+    <div class="metric-value success">SUKSES</div>
+    <div class="metric-label">Build Produksi (1.93s)</div>
+  </div>
+  <div class="metric-card warning">
+    <div class="metric-value warning">12</div>
+    <div class="metric-label">Kerentanan Dep. (NPM Audit)</div>
+  </div>
+</div>
+
+<h3>Tiga Temuan Utama yang Membutuhkan Atensi Tim:</h3>
+<ol>
+  <li><strong>[Keamanan - Tinggi] Potensi Stored XSS via <code>v-html</code> di Edukasi Kesehatan:</strong> Field <code>artikel.isi</code> dirender tanpa sanitasi HTML sisi klien (belum memakai <code>DOMPurify</code>). Rentan jika backend mengembalikan script berbahaya.</li>
+  <li><strong>[Keamanan - Sedang] Reverse Tabnabbing pada Pratinjau Dokumen PDF iOS:</strong> Pemanggilan <code>window.open(url, '_blank')</code> tidak menyertakan <code>'noopener,noreferrer'</code>.</li>
+  <li><strong>[Keamanan & Kompatibilitas - Sedang] Mixed Content Risk pada Gambar Edukasi:</strong> Base URL gambar didefinisikan dengan protokol HTTP mentah ke alamat IP publik (<code>http://194.169.46.193/...</code>) alih-alih domain HTTPS resmi.</li>
+</ol>
+
+<!-- SECTION 2: HASIL TEST PER AREA -->
+<h2>2. Tabel Hasil Pengujian per Area</h2>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 14%;">Area</th>
+      <th style="width: 32%;">Cakupan Pengujian</th>
+      <th style="width: 30%;">Target File / Modul</th>
+      <th style="width: 12%; text-align: center;">Jumlah Test</th>
+      <th style="width: 12%; text-align: center;">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Area A: Fondasi</strong></td>
+      <td>Auth Store, Axios API interceptor (Bearer & 401 redirect), Navigation Guards, dan route registration.</td>
+      <td><code>src/services/api.js</code><br><code>src/stores/auth.js</code><br><code>src/router/index.js</code></td>
+      <td style="text-align: center;">20 Test</td>
+      <td style="text-align: center;"><span class="badge badge-pass">20 LULUS (100%)</span></td>
+    </tr>
+    <tr>
+      <td><strong>Area B: Tagihan Pasien Umum</strong></td>
+      <td>Resolusi status (kunci vs final), kalkulasi subtotal/total, variasi spasi/kapitalisasi, state loading/empty/error.</td>
+      <td><code>src/views/TagihanPasienUmumView.vue</code></td>
+      <td style="text-align: center;">24 Test</td>
+      <td style="text-align: center;"><span class="badge badge-pass">24 LULUS (100%)</span></td>
+    </tr>
+    <tr>
+      <td><strong>Area C: Notifikasi</strong></td>
+      <td>Store personal vs blast, unread counter badge, mark-as-read resilience, proteksi skema URL (tolak javascript:/data:).</td>
+      <td><code>src/stores/notification.js</code><br><code>src/utils/notifTarget.js</code><br><code>src/components/common/Notification*.vue</code></td>
+      <td style="text-align: center;">35 Test</td>
+      <td style="text-align: center;"><span class="badge badge-pass">35 LULUS (100%)</span></td>
+    </tr>
+    <tr>
+      <td><strong>Area D: Edukasi Kesehatan</strong></td>
+      <td>Parsing tag string, filter chip multi-tag, counter API tepat 1x (resilien saat error), URL fallback image.</td>
+      <td><code>src/utils/edukasi.js</code><br><code>src/views/EdukasiView.vue</code><br><code>src/views/EdukasiDetailView.vue</code></td>
+      <td style="text-align: center;">36 Test</td>
+      <td style="text-align: center;"><span class="badge badge-pass">36 LULUS (100%)</span></td>
+    </tr>
+    <tr>
+      <td><strong>Area E: Rencana Kontrol BPJS</strong></td>
+      <td>Parsing payload kontrol, format jam HH:mm, pemisahan tegas state "tidak ada data" vs "gagal memuat", retry fetch.</td>
+      <td><code>src/views/RiwayatReservasiView.vue</code></td>
+      <td style="text-align: center;">25 Test</td>
+      <td style="text-align: center;"><span class="badge badge-pass">25 LULUS (100%)</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<!-- SECTION 3: TEMUAN KEAMANAN & FUNGSIONAL -->
+<h2>3. Daftar Temuan Terperinci (Security & Functional Findings)</h2>
+
+<h3>A. Temuan Keamanan (Security Vulnerabilities)</h3>
+
+<div class="finding-box high">
+  <div class="finding-header">
+    <div class="finding-title">
+      <span class="badge badge-high">Tinggi</span>
+      SEC-01: Potensi Stored XSS via Direktif v-html pada Artikel Edukasi
+    </div>
+    <span class="finding-loc">EdukasiDetailView.vue:L91</span>
+  </div>
+  <div class="finding-desc">
+    Konten artikel kesehatan dirender langsung menggunakan <code>v-html="artikel.isi || 'Belum ada konten'"</code>. Jika data API dari backend atau database disusupi payload HTML berbahaya (misal <code>&lt;img src=x onerror=...&gt;</code>), kode JavaScript tak berizin akan tereksekusi di browser pasien dengan hak akses penuh ke LocalStorage portal.
+  </div>
+  <div class="finding-remed">
+    <strong>Rekomendasi Perbaikan:</strong> Pasang pustaka <code>dompurify</code> dan bungkus sebelum dirender:
+    <code>const cleanContent = computed(() => DOMPurify.sanitize(artikel.value?.isi || ''))</code>.
+  </div>
+</div>
+
+<div class="finding-box medium">
+  <div class="finding-header">
+    <div class="finding-title">
+      <span class="badge badge-medium">Sedang</span>
+      SEC-02: Reverse Tabnabbing via window.open Tanpa noopener,noreferrer
+    </div>
+    <span class="finding-loc">PreviewDokumenView.vue:L279</span>
+  </div>
+  <div class="finding-desc">
+    Pada penanganan unduh PDF untuk perangkat iOS, tab baru dibuka dengan <code>window.open(url, '_blank')</code> tanpa parameter rel. Halaman yang dibuka memiliki akses ke <code>window.opener</code> dan berpotensi memanipulasi tab asal pasien.
+  </div>
+  <div class="finding-remed">
+    <strong>Rekomendasi Perbaikan:</strong> Gunakan parameter ketiga: <code>window.open(url, '_blank', 'noopener,noreferrer')</code>.
+  </div>
+</div>
+
+<div class="finding-box medium">
+  <div class="finding-header">
+    <div class="finding-title">
+      <span class="badge badge-medium">Sedang</span>
+      SEC-03: Hardcoded Base URL Gambar Menggunakan Plain HTTP dan IP Publik
+    </div>
+    <span class="finding-loc">src/utils/edukasi.js:L8</span>
+  </div>
+  <div class="finding-desc">
+    Base URL didefinisikan sebagai <code>http://194.169.46.193/gos2_plus/uploads/edukasi/</code>. Saat portal di-hosting pada HTTPS, peramban modern akan memblokir gambar tersebut akibat <em>Mixed Content Policy</em>, serta mengekspos IP server internal.
+  </div>
+  <div class="finding-remed">
+    <strong>Rekomendasi Perbaikan:</strong> Pindahkan ke environment variable <code>import.meta.env.VITE_EDUKASI_IMG_BASE</code> dengan fallback domain resmi <code>https://apirstjokro.purworejokab.go.id/...</code>.
+  </div>
+</div>
+
+<div class="finding-box medium">
+  <div class="finding-header">
+    <div class="finding-title">
+      <span class="badge badge-medium">Sedang</span>
+      SEC-04: Kredensial Firebase Client Hardcoded dalam Source Code
+    </div>
+    <span class="finding-loc">src/services/firebase.js:L5-13</span>
+  </div>
+  <div class="finding-desc">
+    Kredensial Firebase (API Key, Project ID, App ID) tercantum statis di source code. Meskipun client-side config, best practice mewajibkan isolasi melalui variabel <code>.env</code> dan pembatasan domain di Google Cloud Console.
+  </div>
+  <div class="finding-remed">
+    <strong>Rekomendasi Perbaikan:</strong> Gunakan <code>import.meta.env.VITE_FIREBASE_*</code> dan aktifkan HTTP Referrer Restrictions pada API Key.
+  </div>
+</div>
+
+<div class="finding-box high">
+  <div class="finding-header">
+    <div class="finding-title">
+      <span class="badge badge-high">Tinggi</span>
+      SEC-05: 12 Kerentanan Tingkat Tinggi pada Dependensi Pihak Ketiga
+    </div>
+    <span class="finding-loc">package.json (NPM Audit)</span>
+  </div>
+  <div class="finding-desc">
+    Audit dependensi menemukan 12 vulnerabilitas tingkat High pada paket <code>@grpc/grpc-js</code> (auth cert bypass), <code>@vue/server-renderer</code> (XSS), <code>fast-uri</code> (SSRF), <code>follow-redirects</code> (credential leak), <code>source-map-js</code> (DoS), dan <code>vite/launch-editor</code> (command execution).
+  </div>
+  <div class="finding-remed">
+    <strong>Rekomendasi Perbaikan:</strong> Lakukan koordinasi pembaruan minor/patch pada Vite (>=8.2.3) dan patch paket Firebase.
+  </div>
+</div>
+
+<div class="finding-box low">
+  <div class="finding-header">
+    <div class="finding-title">
+      <span class="badge badge-low">Rendah</span>
+      SEC-06: Penyimpanan Token JWT dan Data Pasien Sensitif di LocalStorage
+    </div>
+    <span class="finding-loc">src/stores/auth.js:L35-36</span>
+  </div>
+  <div class="finding-desc">
+    <code>sapa_token</code> dan objek <code>sapa_user</code> (berisi NORM dan nama pasien) disimpan dalam LocalStorage yang rentan diekfiltrasi jika terjadi serangan XSS pada aplikasi.
+  </div>
+  <div class="finding-remed">
+    <strong>Rekomendasi Perbaikan:</strong> Evaluasi penggunaan cookie <code>HttpOnly; Secure; SameSite=Strict</code> untuk token sesi.
+  </div>
+</div>
+
+<h3>B. Temuan Fungsional & Arsitektur</h3>
+
+<div class="finding-box medium">
+  <div class="finding-header">
+    <div class="finding-title">
+      <span class="badge badge-medium">Sedang</span>
+      FUNC-01: Fitur Tandai Semua Dibaca Belum Terhubung ke Endpoint Server
+    </div>
+    <span class="finding-loc">src/stores/notification.js:L276</span>
+  </div>
+  <div class="finding-desc">
+    Fungsi <code>markAllPersonalAsRead()</code> hanya menandai status baca pada LocalStorage lokal browser tanpa mengirimkan request sinkronisasi ke server API SIMRS. Status unread akan muncul kembali bila pasien membuka perangkat lain.
+  </div>
+  <div class="finding-remed">
+    <strong>Rekomendasi:</strong> Koordinasikan dengan backend untuk penyediaan endpoint <code>POST /notifikasi/tandai-semua-dibaca</code>.
+  </div>
+</div>
+
+<div class="finding-box medium">
+  <div class="finding-header">
+    <div class="finding-title">
+      <span class="badge badge-medium">Sedang</span>
+      FUNC-02: Inkonsistensi Dokumentasi Respons Rencana Kontrol BPJS Saat Nihil
+    </div>
+    <span class="finding-loc">src/views/RiwayatReservasiView.vue:L692</span>
+  </div>
+  <div class="finding-desc">
+    Bentuk payload SIMRS saat pasien tidak memiliki rencana kontrol belum didokumentasikan secara definitif (apakah <code>data: null</code>, <code>data: []</code>, atau kode HTTP selain 200).
+  </div>
+  <div class="finding-remed">
+    <strong>Rekomendasi:</strong> Tetapkan kontrak API JSON formal dengan mentor SIMRS untuk skenario data kosong.
+  </div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- SECTION 4: HASIL PEMERIKSAAN STATIS -->
+<h2>4. Hasil Pemeriksaan Statis & Keamanan</h2>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 28%;">Parameter Pemeriksaan</th>
+      <th style="width: 22%;">Kondisi / Nilai</th>
+      <th style="width: 50%;">Analisis & Evaluasi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Build Produksi Vite</strong></td>
+      <td><span class="badge badge-pass">SUKSES (1.93s)</span></td>
+      <td>Bundle teroptimasi bersih (446 KB preview chunk, 166 KB core index). PWA SW ter-generate.</td>
+    </tr>
+    <tr>
+      <td><strong>Esbuild Console Drop</strong></td>
+      <td><span class="badge badge-pass">AKTIF</span></td>
+      <td>Seluruh <code>console.log</code> dan <code>debugger</code> otomatis dihilangkan pada bundle produksi.</td>
+    </tr>
+    <tr>
+      <td><strong>PWA Service Worker Caching</strong></td>
+      <td><span class="badge badge-pass">AMAN</span></td>
+      <td>Runtime caching <strong>hanya</strong> menyasar font Google. Endpoint API data medis tidak di-cache di SW.</td>
+    </tr>
+    <tr>
+      <td><strong>Penggunaan innerHTML / eval</strong></td>
+      <td><span class="badge badge-pass">NIHIL (0)</span></td>
+      <td>Tidak ditemukan penggunaan <code>eval()</code>, <code>new Function()</code>, atau <code>innerHTML</code> langsung.</td>
+    </tr>
+    <tr>
+      <td><strong>Content Security Policy (CSP)</strong></td>
+      <td><span class="badge badge-medium">BELUM TERPASANG</span></td>
+      <td>File <code>index.html</code> belum memuat meta tag CSP atau Referrer-Policy yang membatasi origin eksternal.</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- SECTION 5: CHECKLIST UJI MANUAL -->
+<h2>5. Checklist Pengujian Manual (Untuk Diuji di Peramban / HP)</h2>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 6%; text-align: center;">No</th>
+      <th style="width: 24%;">Modul / Fitur</th>
+      <th style="width: 35%;">Skenario Pengujian</th>
+      <th style="width: 35%;">Kriteria Verifikasi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center;">1</td>
+      <td><strong>Tampilan Responsif</strong></td>
+      <td>Buka portal pada resolusi 360px (Android) dan 375px (iPhone).</td>
+      <td>Tidak ada horizontal scrollbar liar; bottom navigation tidak menutupi tombol formulir.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center;">2</td>
+      <td><strong>PWA Install & Offline</strong></td>
+      <td>Uji tombol install PWA di Chrome/Safari. Putuskan koneksi internet.</td>
+      <td>Modal instalasi muncul; halaman shell aplikasi tetap terbuka tanpa layar putih saat offline.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center;">3</td>
+      <td><strong>QR & Barcode Tiket</strong></td>
+      <td>Buka bukti reservasi poli yang memiliki nomor antrian.</td>
+      <td>Barcode dan QR Code ter-render presisi dan dapat dipindai oleh barcode scanner fisik rumah sakit.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center;">4</td>
+      <td><strong>Dekripsi & Pratinjau PDF</strong></td>
+      <td>Buka berkas hasil radiologi atau laboratorium terenkripsi AES-256.</td>
+      <td>PDF terdekripsi di memori dan canvas viewer dapat zoom in/out serta mengunduh berkas utuh.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center;">5</td>
+      <td><strong>Notifikasi Riil Backend</strong></td>
+      <td>Login akun pasien riil yang memiliki jadwal kontrol aktif.</td>
+      <td>Badge counter berkurang real-time setelah dibaca; navigasi ke detail reservasi berhasil.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center;">6</td>
+      <td><strong>Konektivitas Gambar Edukasi</strong></td>
+      <td>Akses Edukasi Kesehatan di lingkungan deployment HTTPS.</td>
+      <td>Gambar tampil tanpa mixed content warning; placeholder fallback muncul jika gambar 404.</td>
+    </tr>
+    <tr>
+      <td style="text-align: center;">7</td>
+      <td><strong>Kontrol BPJS Kosong</strong></td>
+      <td>Login pasien umum yang tidak memiliki rencana kontrol dokter.</td>
+      <td>Teks "Tidak ada rencana kontrol" tampil dan tombol detail tidak muncul.</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- SECTION 6: FILE & PERINTAH TEST -->
+<h2>6. File Test Suite & Perintah Menjalankan Ulang</h2>
+<p>
+  Seluruh test suite otomatis telah terintegrasi di direktori <code>tests/</code> dan dapat dijalankan dengan perintah berikut:
+</p>
+<pre><code># Menjalankan seluruh 140 pengujian unit & integrasi
+npm run test:run
+
+# Menjalankan pengujian dengan metrik code coverage v8
+npm run test:coverage
+
+# Memeriksa build bundle produksi
+npm run build</code></pre>
+
+<div class="footer-sign">
+  <div><strong>Dokumen Resmi QA & Pentesting SAPA RSTN</strong> &bull; RSUD R.A.A. Tjokronegoro</div>
+  <div>Dicetak otomatis pada: 21 Oktober 2026</div>
+</div>
+
+</body>
+</html>

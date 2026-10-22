@@ -1,0 +1,23 @@
+<IfModule mod_mime.c>
+  # Pastikan file .mjs dan .js disajikan dengan MIME type application/javascript
+  AddType application/javascript .mjs .js
+  AddType application/wasm .wasm
+  AddType application/json .json .webmanifest
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Izinkan CORS untuk worker dan font
+  <FilesMatch "\.(mjs|js|wasm|woff2|woff|ttf|svg|png|jpg|jpeg|gif|ico)$">
+    Header set Access-Control-Allow-Origin "*"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_rewrite.c>
+  # SPA Routing: Arahkan semua request non-file ke index.html
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
