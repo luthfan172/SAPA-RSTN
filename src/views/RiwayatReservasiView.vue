@@ -1,13 +1,14 @@
 <template>
   <div class="max-w-4xl mx-auto space-y-5 sm:space-y-6" style="animation: fade-in 0.3s ease-out;">
-    <!-- Banner -->
-    <div class="bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-700 rounded-3xl p-6 sm:p-8 text-white shadow-lg shadow-teal-950/10 relative overflow-hidden">
-      <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+    <!-- Combined Banner & BPJS Info Card -->
+    <div class="bg-gradient-to-r from-teal-600 via-emerald-600 to-cyan-700 rounded-3xl p-6 sm:p-7 text-white shadow-lg shadow-teal-950/10 relative overflow-hidden space-y-5">
+      <!-- Dekorasi background blur -->
+      <div class="absolute -right-10 -bottom-10 w-56 h-56 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+      <div class="absolute -left-10 -top-10 w-48 h-48 bg-teal-400/20 rounded-full blur-2xl pointer-events-none"></div>
+
+      <!-- Bagian Atas: Judul & Aksi -->
       <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div class="space-y-1.5">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-white text-xs font-semibold backdrop-blur-md border border-white/20">
-            <span>📋 Pasien Umum (Bayar Mandiri)</span>
-          </div>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Riwayat Reservasi Pasien</h2>
           <p class="text-teal-100/90 text-xs sm:text-sm max-w-xl leading-relaxed">
             Daftar riwayat dan tiket bukti pendaftaran poliklinik rawat jalan Anda di RSUD R.A.A. Tjokronegoro.
@@ -19,7 +20,7 @@
             type="button"
             @click="fetchReservasi"
             :disabled="loading"
-            class="px-3.5 py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs transition-all border border-white/20 flex items-center gap-1.5 active:scale-95 cursor-pointer"
+            class="px-3.5 py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs transition-all border border-white/20 flex items-center gap-1.5 active:scale-95 cursor-pointer backdrop-blur-sm"
           >
             <svg class="w-3.5 h-3.5" :class="loading ? 'animate-spin' : ''" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
             <span>Refresh</span>
@@ -34,26 +35,20 @@
           </router-link>
         </div>
       </div>
-    </div>
 
-    <!-- BPJS Notice -->
-    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 p-5 sm:p-6 text-white shadow-lg shadow-blue-950/15">
-      <!-- Dekorasi blob -->
-      <div class="absolute -right-8 -top-8 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-      <div class="absolute right-16 -bottom-6 w-24 h-24 bg-cyan-400/20 rounded-full blur-xl pointer-events-none"></div>
-
-      <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <!-- Kiri: icon + info -->
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center shrink-0">
-            <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <!-- Bagian Bawah: Informasi BPJS Kesehatan Terintegrasi -->
+      <div class="relative z-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 sm:p-4.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <!-- Kiri: icon + info rencana kontrol + note -->
+        <div class="flex items-start sm:items-center gap-3.5 min-w-0">
+          <div class="w-10 h-10 rounded-xl bg-white border border-white/50 text-blue-600 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0 shadow-sm">
+            <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
-          <div>
+          <div class="min-w-0">
             <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/20 border border-white/25 text-[10px] font-bold uppercase tracking-wider mb-1">
               BPJS Kesehatan
             </div>
             <div class="text-[13px] leading-snug">
-              <span class="font-semibold text-white/80">Rencana kontrol selanjutnya:</span>
+              <span class="font-semibold text-white/80">Rencana kontrol selanjutnya :</span>
               <span v-if="bpjsLoading" class="text-white/60 italic ml-1 text-xs">Memuat...</span>
               <span v-else-if="bpjsError" class="text-red-200 ml-1 text-xs">
                 Gagal memuat
@@ -64,18 +59,36 @@
               </span>
               <span v-else class="text-white/60 ml-1 text-xs">Tidak ada rencana kontrol</span>
             </div>
+            <!-- Note BPJS -->
+            <p class="mt-1.5 text-[11px] leading-relaxed text-yellow-200/95 flex items-center flex-wrap gap-1.5">
+              <span class="flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 shrink-0 text-yellow-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <strong class="text-yellow-200 font-bold">Perhatian:</strong>
+              </span>
+              <span>Reservasi kontrol ulang untuk pasien BPJS Kesehatan/JKN dapat langsung dilakukan melalui aplikasi Mobile JKN.</span>
+              <a
+                :href="mobileJknUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-white text-blue-700 font-extrabold text-[11px] shadow-sm hover:bg-blue-50 active:scale-95 transition-all cursor-pointer border border-white/80"
+                title="Buka aplikasi Mobile JKN"
+              >
+                <span>Mobile JKN</span>
+                <svg class="w-3 h-3 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              </a>
+            </p>
           </div>
         </div>
 
-        <!-- Kanan: tombol Detail -->
-        <div class="flex items-center gap-2 shrink-0">
+        <!-- Kanan: Tombol Detail -->
+        <div v-if="bpjsKontrol" class="flex items-center gap-2 shrink-0 self-end sm:self-center">
           <button
-            v-if="bpjsKontrol"
             type="button"
             @click="showBpjsDetailModal = true"
-            class="px-4 py-2 rounded-xl bg-white text-blue-700 font-extrabold text-xs hover:bg-blue-50 active:scale-95 transition-all shadow-sm"
+            class="px-4 py-2 rounded-xl bg-white text-emerald-800 font-extrabold text-xs hover:bg-emerald-50 active:scale-95 transition-all shadow-sm flex items-center gap-1.5 cursor-pointer"
           >
-            Lihat Detail
+            <span>Lihat Detail</span>
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
           </button>
         </div>
       </div>
@@ -294,141 +307,105 @@
           v-if="showBpjsDetailModal && bpjsKontrol"
           class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
         >
-          <div class="bg-white w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl" style="animation: scale-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+          <div class="bg-white w-full max-w-md max-h-[90vh] overflow-y-auto rounded-3xl p-6 sm:p-7 shadow-2xl space-y-4 text-center" style="animation: scale-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
 
-            <!-- Modal Header bergradient -->
-            <div class="relative overflow-hidden rounded-t-3xl bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-500 p-6 text-white">
-              <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-
-              <!-- Tombol X absolut di pojok kanan atas -->
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+              <div class="text-left">
+                <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider">BPJS Kesehatan</span>
+                <h3 class="text-base sm:text-lg font-black text-gray-800">Rencana Kontrol</h3>
+              </div>
               <button
                 @click="showBpjsDetailModal = false"
-                class="absolute top-4 right-4 z-20 w-8 h-8 rounded-xl bg-white/20 hover:bg-white/30 border border-white/25 flex items-center justify-center text-white cursor-pointer transition-all"
+                class="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 cursor-pointer"
               >
                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
               </button>
-
-              <!-- Dua kolom simetris: kiri = info, kanan = QR -->
-              <div class="flex items-center gap-4 relative z-10 pr-8">
-                <!-- Kiri: label + judul + badge antrian -->
-                <div class="flex-1 min-w-0">
-                  <span class="text-[10px] font-bold uppercase tracking-widest text-white/70">BPJS Kesehatan</span>
-                  <h3 class="text-lg font-black text-white mt-0.5">Rencana Kontrol</h3>
-                  <div class="mt-2.5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/20 border border-white/30 backdrop-blur-sm">
-                    <span class="text-[10px] font-semibold text-white/80">No. Antrian</span>
-                    <span class="text-base font-black text-white tracking-wider">{{ bpjsKontrol.NOMOR_ANTRIAN }}</span>
-                  </div>
-                </div>
-
-                <!-- Kanan: QR code rata tengah vertikal -->
-                <div class="shrink-0 flex items-center justify-center mr-3">
-                  <button
-                    type="button"
-                    @click="showBpjsQrFullscreen = true"
-                    class="p-1.5 rounded-xl bg-white shadow-md hover:shadow-lg active:scale-95 transition-all cursor-pointer group relative block"
-                    title="Tap untuk perbesar QR"
-                  >
-                    <img
-                      v-if="bpjsQrDataUrl"
-                      :src="bpjsQrDataUrl"
-                      alt="QR Pendaftaran BPJS"
-                      class="w-20 h-20 object-contain rounded-lg"
-                    />
-                    <div v-else class="w-20 h-20 flex items-center justify-center">
-                      <svg class="w-5 h-5 animate-spin text-blue-400" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" class="opacity-25"/><path d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="3" stroke-linecap="round" class="opacity-75"/></svg>
-                    </div>
-                    <!-- Zoom hint -->
-                    <div class="absolute inset-0 rounded-xl bg-blue-900/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <svg class="w-4 h-4 text-white drop-shadow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-                    </div>
-                  </button>
-                </div>
-              </div>
             </div>
 
-            <!-- Body modal -->
-            <div class="p-6 sm:p-7 space-y-4">
-
-              <!-- Detail rows -->
-              <div class="space-y-1.5 text-xs">
-                <!-- Tanggal -->
-                <div class="flex items-center justify-between gap-2 p-3 rounded-2xl bg-blue-50/70 border border-blue-100">
-                  <span class="flex items-center gap-2 text-blue-700 font-semibold shrink-0">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    Tanggal Kontrol
-                  </span>
-                  <span class="font-extrabold text-gray-800 text-right">{{ formatTglIndo(bpjsKontrol.TANGGALKUNJUNGAN) }}</span>
-                </div>
-                <!-- Jam -->
-                <div class="flex items-center justify-between gap-2 p-3 rounded-2xl bg-gray-50 border border-gray-100">
-                  <span class="flex items-center gap-2 text-gray-500 font-medium shrink-0">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    Estimasi Jam
-                  </span>
-                  <span class="font-extrabold text-gray-800">{{ formatJamEstimasi(bpjsKontrol.ESTIMASI_PELAYANAN) }}</span>
-                </div>
-                <!-- Poli -->
-                <div class="flex items-center justify-between gap-2 p-3 rounded-2xl bg-gray-50 border border-gray-100">
-                  <span class="flex items-center gap-2 text-gray-500 font-medium shrink-0">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                    Poliklinik
-                  </span>
-                  <span class="font-bold text-gray-800 text-right">{{ bpjsKontrol.poli }}</span>
-                </div>
-                <!-- Dokter -->
-                <div class="flex items-start justify-between gap-3 p-3 rounded-2xl bg-gray-50 border border-gray-100">
-                  <span class="flex items-center gap-2 text-gray-500 font-medium shrink-0">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    Dokter
-                  </span>
-                  <span class="font-bold text-gray-800 text-right flex-1 break-words leading-snug">{{ bpjsKontrol.namaDokter }}</span>
-                </div>
-              </div>
-
-              <!-- Divider -->
-              <div class="border-t border-dashed border-gray-200"></div>
-
-              <!-- Kode Booking -->
-              <div class="space-y-1.5 text-xs">
-                <!-- TODO: konfirmasi ke mentor makna pasti field ID -->
-                <div class="flex items-center justify-between gap-2 px-1">
-                  <span class="text-gray-400">Kode Booking</span>
-                  <span class="font-bold text-gray-700 font-mono tracking-tight">{{ bpjsKontrol.ID }}</span>
-                </div>
-              </div>
-
-              <!-- Divider -->
-              <div class="border-t border-dashed border-gray-200"></div>
-
-              <!-- Info Mobile JKN -->
-              <div class="flex items-center justify-between gap-3 p-3 rounded-2xl bg-gray-900 text-white">
-                <p class="text-[11px] leading-snug">
-                  Info selanjutnya tersedia di
-                  <strong class="text-cyan-400">Mobile JKN</strong>
-                </p>
-                <div class="flex items-center gap-1.5 shrink-0">
-                  <a :href="PLAY_STORE_URL" target="_blank" rel="noopener noreferrer"
-                    class="px-2.5 py-1 rounded-lg bg-white/15 hover:bg-white/25 border border-white/20 text-white font-semibold text-[11px] active:scale-95 transition-all"
-                  >Play Store</a>
-                  <a :href="APP_STORE_URL" target="_blank" rel="noopener noreferrer"
-                    class="px-2.5 py-1 rounded-lg bg-white/15 hover:bg-white/25 border border-white/20 text-white font-semibold text-[11px] active:scale-95 transition-all"
-                  >App Store</a>
-                </div>
-              </div>
-
-              <!-- Tombol Tutup -->
+            <!-- QR Code Section -->
+            <div v-if="bpjsQrDataUrl">
               <button
                 type="button"
-                @click="showBpjsDetailModal = false"
-                class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-bold text-xs shadow-md shadow-blue-500/30 transition-all cursor-pointer active:scale-[0.98]"
+                @click="showBpjsQrFullscreen = true"
+                class="mx-auto block p-3 rounded-2xl border border-gray-200 bg-white shadow-sm hover:shadow-md active:scale-95 transition-all cursor-pointer group relative"
+                title="Tap untuk perbesar QR"
               >
-                Tutup
+                <img
+                  :src="bpjsQrDataUrl"
+                  alt="QR Pendaftaran BPJS"
+                  class="w-36 h-36 object-contain rounded-lg"
+                />
+                <div class="absolute inset-0 rounded-2xl bg-blue-900/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <svg class="w-5 h-5 text-white drop-shadow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                </div>
               </button>
             </div>
+            <div v-else-if="!bpjsQrDataUrl" class="p-3 rounded-2xl bg-gray-50 border border-gray-200 text-xs text-gray-500 font-medium">
+              ⏱️ QR Code tidak tersedia.
+            </div>
+
+            <!-- Detail info card -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-blue-50/60 border border-blue-100 text-left space-y-2.5 text-xs">
+              <!-- Nomor Antrian -->
+              <div class="flex items-center justify-between pb-2 border-b border-blue-100">
+                <span class="text-blue-800 font-bold">Nomor Antrian:</span>
+                <span class="text-2xl font-black text-blue-700 tracking-wider">{{ bpjsKontrol.NOMOR_ANTRIAN }}</span>
+              </div>
+              <!-- Kode Booking -->
+              <div class="flex items-center justify-between">
+                <span class="text-gray-500">Kode Booking:</span>
+                <span class="font-bold text-gray-800 font-mono text-sm">{{ bpjsKontrol.ID }}</span>
+              </div>
+              <!-- Tanggal Kontrol -->
+              <div class="flex items-center justify-between">
+                <span class="text-gray-500">Tanggal Kontrol:</span>
+                <span class="font-bold text-gray-800">{{ formatTglIndo(bpjsKontrol.TANGGALKUNJUNGAN) }}</span>
+              </div>
+              <!-- Estimasi Jam -->
+              <div class="flex items-center justify-between">
+                <span class="text-gray-500">Estimasi Jam:</span>
+                <span class="font-bold text-gray-800">{{ formatJamEstimasi(bpjsKontrol.ESTIMASI_PELAYANAN) }}</span>
+              </div>
+              <!-- Poliklinik -->
+              <div class="flex items-center justify-between">
+                <span class="text-gray-500">Poliklinik:</span>
+                <span class="font-bold text-gray-800 text-right">{{ bpjsKontrol.poli }}</span>
+              </div>
+              <!-- Dokter -->
+              <div class="flex items-start justify-between gap-2">
+                <span class="text-gray-500 shrink-0">Dokter:</span>
+                <span class="font-bold text-gray-800 text-right flex-1 break-words leading-snug">{{ bpjsKontrol.namaDokter }}</span>
+              </div>
+            </div>
+
+            <!-- Info Mobile JKN -->
+            <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200/70 text-left text-xs text-amber-900 space-y-1">
+              <p class="font-bold flex items-center gap-1.5 text-amber-800">
+                <svg class="w-4 h-4 text-amber-600 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <span>Info Lanjutan:</span>
+              </p>
+              <p class="text-[11px] leading-relaxed text-amber-700">
+                Informasi selengkapnya tersedia di aplikasi
+                <a :href="mobileJknUrl" target="_blank" rel="noopener noreferrer" class="underline font-bold text-amber-900 hover:text-amber-950">Mobile JKN</a>
+                (<a :href="PLAY_STORE_URL" target="_blank" rel="noopener noreferrer" class="underline font-bold text-amber-800">Play Store</a> /
+                <a :href="APP_STORE_URL" target="_blank" rel="noopener noreferrer" class="underline font-bold text-amber-800">App Store</a>).
+              </p>
+            </div>
+
+            <!-- Tombol Tutup -->
+            <button
+              type="button"
+              @click="showBpjsDetailModal = false"
+              class="w-full py-3 px-4 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-bold text-xs shadow-md transition-all cursor-pointer active:scale-[0.98]"
+            >
+              Tutup
+            </button>
           </div>
         </div>
       </transition>
     </Teleport>
+
 
     <!-- Fullscreen QR BPJS -->
     <Teleport to="body">
@@ -525,12 +502,14 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch, nextTick } from 'vue'
+import { ref, reactive, computed, onMounted, watch, nextTick } from 'vue'
 import QRCode from 'qrcode'
 import api from '../services/api'
 import { useAuthStore } from '../stores/auth'
-import { PLAY_STORE_URL, APP_STORE_URL } from '../utils/mobileJkn'
+import { PLAY_STORE_URL, APP_STORE_URL, getMobileJknUrl } from '../utils/mobileJkn'
 import BookingBarcode from '../components/common/BookingBarcode.vue'
+
+const mobileJknUrl = computed(() => getMobileJknUrl())
 
 const authStore = useAuthStore()
 

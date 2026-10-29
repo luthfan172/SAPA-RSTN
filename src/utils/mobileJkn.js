@@ -11,6 +11,19 @@
 export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=app.bpjs.mobile&hl=id'
 export const APP_STORE_URL = 'https://apps.apple.com/id/app/mobile-jkn/id1237601115'
 
+export function isIOS() {
+  if (typeof navigator === 'undefined') return false
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+}
+
+export function getMobileJknUrl() {
+  return isIOS() ? APP_STORE_URL : PLAY_STORE_URL
+}
+
+export function openMobileJkn() {
+  window.open(getMobileJknUrl(), '_blank', 'noopener,noreferrer')
+}
+
 export function openMobileJknAndroid() {
   window.open(PLAY_STORE_URL, '_blank', 'noopener,noreferrer')
 }
@@ -18,3 +31,4 @@ export function openMobileJknAndroid() {
 export function openMobileJknIOS() {
   window.open(APP_STORE_URL, '_blank', 'noopener,noreferrer')
 }
+

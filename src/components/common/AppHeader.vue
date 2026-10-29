@@ -36,8 +36,9 @@
         <!-- Notification bell -->
         <div ref="notifContainer" class="relative">
           <button 
-            @click="toggleNotifPanel"
+            @click="handleNotifClick"
             class="relative p-2 rounded-xl hover:bg-gray-100 transition-colors text-gray-500 cursor-pointer"
+            :title="isMobile ? 'Lihat Semua Notifikasi' : 'Notifikasi'"
           >
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -47,7 +48,7 @@
               {{ notificationStore.totalUnreadCount > 9 ? '9+' : notificationStore.totalUnreadCount }}
             </span>
           </button>
-          <NotificationDropdown v-if="showNotifPanel" @close="showNotifPanel = false" />
+          <NotificationDropdown v-if="!isMobile && showNotifPanel" @close="showNotifPanel = false" />
           <!-- Modal rincian notifikasi: dirender selalu (v-if dikelola store),
                sejajar dengan dropdown agar tidak ikut ter-unmount saat panel ditutup. -->
           <NotificationDetailModal />
@@ -108,6 +109,17 @@ const { isMobile } = useResponsive()
 const notifContainer = ref(null)
 const showNotifPanel = ref(false)
 
+function handleNotifClick() {
+  if (isMobile.value) {
+    showNotifPanel.value = false
+    if (route.name !== 'NotifikasiSemua') {
+      router.push({ name: 'NotifikasiSemua' })
+    }
+    return
+  }
+  toggleNotifPanel()
+}
+
 function toggleNotifPanel() {
   showNotifPanel.value = !showNotifPanel.value
   if (showNotifPanel.value) {
@@ -117,6 +129,12 @@ function toggleNotifPanel() {
     notificationStore.fetchBlastNotifications()
   }
 }
+
+watch(isMobile, (mobile) => {
+  if (mobile) {
+    showNotifPanel.value = false
+  }
+})
 
 function handleClickOutside(event) {
   if (showNotifPanel.value && notifContainer.value && !notifContainer.value.contains(event.target)) {

@@ -210,16 +210,30 @@ export const useNotificationStore = defineStore('notification', () => {
         list.value = raw
           .filter(r => r.publish !== '0')
           .map(normalizePersonalItem)
-      } else if (res && (res.code === '404' || res.code === 404)) {
+        error.value = null
+      } else if (
+        res && (
+          res.code === '404' || res.code === 404 ||
+          (res.message && res.message.toLowerCase().includes('tidak ada notifikasi'))
+        )
+      ) {
         list.value = []
+        error.value = null
       } else {
         throw new Error(res?.message || 'Gagal memuat notifikasi')
       }
     } catch (err) {
-      if (err.response?.status === 404 || err.response?.data?.code === '404') {
+      const msg = err.response?.data?.message || err.message || ''
+      if (
+        err.response?.status === 404 ||
+        err.response?.data?.code === '404' ||
+        err.response?.data?.code === 404 ||
+        msg.toLowerCase().includes('tidak ada notifikasi')
+      ) {
         list.value = []
+        error.value = null
       } else {
-        error.value = err.message || 'Terjadi kesalahan jaringan'
+        error.value = msg || 'Terjadi kesalahan jaringan'
       }
     } finally {
       if (showLoading) loading.value = false
@@ -334,12 +348,33 @@ export const useNotificationStore = defineStore('notification', () => {
           tanggal: item.create_date ?? null,  // bisa null, ditangani di komponen
           tipe:    undefined,             // tidak ada tipe dari API ini
         }))
+        blastError.value = null
+      } else if (
+        res && (
+          res.code === '404' || res.code === 404 ||
+          (res.message && res.message.toLowerCase().includes('tidak ada notifikasi'))
+        )
+      ) {
+        // Respons 404 atau "Tidak ada notifikasi global" adalah kondisi wajar saat tidak ada data
+        blastList.value = []
+        blastError.value = null
       } else {
         // Kode selain 200 dianggap error (bukan empty state)
         blastError.value = res?.message || 'Gagal memuat pengumuman.'
       }
     } catch (err) {
-      blastError.value = err.response?.data?.message || 'Terjadi kesalahan jaringan.'
+      const msg = err.response?.data?.message || err.message || ''
+      if (
+        err.response?.status === 404 ||
+        err.response?.data?.code === '404' ||
+        err.response?.data?.code === 404 ||
+        msg.toLowerCase().includes('tidak ada notifikasi')
+      ) {
+        blastList.value = []
+        blastError.value = null
+      } else {
+        blastError.value = msg || 'Terjadi kesalahan jaringan.'
+      }
     } finally {
       blastLoading.value = false
     }

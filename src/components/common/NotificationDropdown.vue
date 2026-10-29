@@ -25,17 +25,8 @@
         <svg class="w-6 h-6 animate-spin text-emerald-600" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" class="opacity-25"/><path d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="3" stroke-linecap="round" class="opacity-75"/></svg>
       </div>
 
-      <!-- Error State -->
-      <div v-else-if="errorMsg" class="p-6 text-center space-y-3">
-        <p class="text-xs text-red-500">{{ errorMsg }}</p>
-        <button @click="fetchNotifications" class="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-xs font-semibold hover:bg-red-100 cursor-pointer">Coba Lagi</button>
-      </div>
-
-      <!-- Empty State -->
-      <div v-else-if="displayList.length === 0" class="p-8 text-center flex flex-col items-center justify-center space-y-2">
-        <div class="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-gray-300">
-          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        </div>
+      <!-- Empty / No Notification State -->
+      <div v-else-if="errorMsg || displayList.length === 0" class="p-8 text-center flex flex-col items-center justify-center">
         <p class="text-sm font-semibold text-gray-500">Tidak ada notifikasi</p>
       </div>
 

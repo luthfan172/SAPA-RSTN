@@ -77,5 +77,16 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api/, '/gos2_plus/web/rsudapi')
       }
     }
+  },
+  preview: {
+    port: 4173,
+    host: true,
+    proxy: {
+      '/api': {
+        target: 'http://194.169.46.193',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '/gos2_plus/web/rsudapi')
+      }
+    }
   }
 })
